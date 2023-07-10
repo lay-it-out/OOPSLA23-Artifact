@@ -2,16 +2,16 @@
 
 This is the artifact for the paper "Automated Ambiguity Detection in Layout-Sensitive Grammars" at OOPSLA'23.
 It consists of two parts:
-1. `lamb/`: our prototype tool that implements the ambiguity detection method introduced in sections ???, together with necessary data and script for reproducing the evaluation in section ???;
+1. `lamb/`: our prototype tool that implements the ambiguity detection method introduced in sections 5, together with necessary data and script for reproducing the evaluation in section 7;
 2. `coq/`: our Coq formulation of the local ambiguity (), SMT encoding (), and proofs of all the lemmas/theorems.
 
 ## 1 Getting Started Guide (??? min)
 
-### 1.1 Building Lamb (??? min)
+### 1.1 Building Lamb (2 min)
 
 We provide two options to set up the environment and you should choose **either**:
 
-- (1.1a) via [Nix]() (version ??? is tested; latest recommended)
+- (1.1a) via [Nix](https://nixos.org/download.html) (version 2.15.1 is tested; latest recommended)
 - (1.1b) via [Virtual Machine](https://www.virtualbox.org)
 
 #### 1.1a
@@ -22,10 +22,10 @@ If you're using Unix/Linux, option 1.1a is much easier as installing the Nix pac
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 ```
 
-Afterwards, set your current directory to the artifact directory (`lamb-artifact`) and run the following to build the artifact:
+Afterwards, set your current directory to the artifact directory (`tool`) and run the following to build the artifact:
 
 ```bash
-nix build
+nix build --no-link
 ```
 
 The building process should take no more than 15 minutes. If an error occurs asking you to enable experimental features of nix, refer to [this guide](https://nixos.wiki/wiki/Flakes#Enable_flakes) to enable flakes and nix commands.
@@ -95,7 +95,9 @@ Finally, input `exit` to quit our tool.
 
 ### 1.3 Checking the Coq Proof Artifact
 
-## 2 Step-by-Step Instructions for Reproducing Evaluations (~??? min)
+TODO
+
+## 2 Step-by-Step Instructions for Reproducing Evaluations (~25 min)
 
 ### 2.1 Looking at Dataset
 
@@ -118,7 +120,7 @@ Then, execute the following command to run all but Python / SASS testcases.
 python run_tests.py
 ```
 
-This shall take around 10-25 minutes. Afterwards, the total running time (sum of `solve_time` and `other_time`), ambiguous sentence length, among other details, shall be printed to the terminal. Another copy will also be stored into `result.json` in the current folder.
+This shall take around 10-25 minutes, depending on the performance of your platform. Afterwards, the total running time (sum of `solve_time` and `other_time`), ambiguous sentence length, among other details, shall be printed to the terminal. Another copy will also be stored into `result.json` in the current folder.
 
 To run every testcases including Python and SASS, please run the following command.
 
@@ -134,7 +136,7 @@ TODO:
 
 ### 2.3 Checking the Results
 
-The results of step 2.2 are saved into a CSV file ???. It has the exact same structure with Table 1 in our paper.
+The results of step 2.2 are saved into a JSON file `result.json`. It has the exact same structure with Table 1 in our paper.
 
 Note: Despite the randomness of the found satisfiable model by Z3 solver, the lengths of the ambiguous sentence (i.e., the last column of Table 1) are determined, though under the hood the found ambiguous sentence may differ.
 
