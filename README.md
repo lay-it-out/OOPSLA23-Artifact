@@ -2,7 +2,8 @@
 
 This is the artifact for the paper "Automated Ambiguity Detection in Layout-Sensitive Grammars" at OOPSLA'23.
 It consists of two parts:
-1. `lamb/`: our prototype tool that implements the ambiguity detection method introduced in sections 5, together with necessary data and script for reproducing the evaluation in section 7;
+
+1. `tool/`: our prototype tool that implements the ambiguity detection method introduced in sections 5, together with necessary data and script for reproducing the evaluation in section 7;
 2. `coq/`: our Coq formulation of the local ambiguity (), SMT encoding (), and proofs of all the lemmas/theorems.
 
 ## 1 Getting Started Guide (??? min)
@@ -12,7 +13,9 @@ It consists of two parts:
 We provide two options to set up the environment and you should choose **either**:
 
 - (1.1a) via [Nix](https://nixos.org/download.html) (version 2.15.1 is tested; latest recommended)
-- (1.1b) via [Virtual Machine](https://www.virtualbox.org)
+- (1.1b) via Docker
+
+As far as we know, using Nix is the best method possible, since it will allow us to show images in a GUI while still maintaining reproducibility. If you are using Windows, we recommend you to use WSL2, and install a image preview application inside NixOS. If you choose to fall back to Docker, you will only be able to view the parse trees in S-expression format, which is equivalent to the graphical form, but less intuitive.
 
 #### 1.1a
 
@@ -32,13 +35,39 @@ The building process should take no more than 15 minutes. If an error occurs ask
 
 #### 1.1b
 
-### 1.2 Testing the Motivating Example
+First, set your current directory to the artifact directory (`tool`), and build the docker image with the following command:
 
-Once you have successfully built Lamb, try running the motivating example. File `tests/motivating-example.bnf` contains the grammar used in Section 2 of the paper. First, run our tool on that grammar (assuming that your current directory is `lamb-artifact`):
+```bash
+docker build . -t lamb:0.0.0
+```
+
+Then, start a container using that image, so that you will be dropped into the development shell:
+
+```bash
+docker run -it lamb:0.0.0
+```
+
+Your shell prompt should now end with `[lamb-dev]>`.
+
+### 1.2 Testing the Motivating Example (1min)
+
+Once you have successfully built Lamb, try running the motivating example. File `tests/motivating-example.bnf` contains the grammar used in Section 2 of the paper. You can check its content first, as the notation is slightly different from those used in the paper (see below for details).
+
+We use the following symbols in the plain-text EBNF files:
+
+- `A|>` for offside on `A`
+- `A>>` for offside-align on `A`
+- `A~` for single on `A`
+- `A || B` for `A` align `B`
+- `A -> B` for `A` indent `B`
+
+Then, run our tool on that grammar (assuming that your current directory is `tool`):
 
 ```
 nix run . -- tests/motivating-example.bnf
 ```
+
+(if you're already inside the development shell, you can also use `python -m lamb tests/motivating-example.bnf` to run our tool)
 
 The output should look like below
 
@@ -58,11 +87,19 @@ Found locally ambiguous variable: "new-var-0". It corresponds to token(s) [1, 3]
 ***
 
 NOTE: indexing for tokens in the sentence starts at 1. Spaces in the sentence are denoted as `␣'.
-NEXT STEP: List and review all parse trees. Type help for available commands. Command completion available with TAB key.
+NEXT STEP: Review all parse trees using the following commands (execute line by line):
+
+show tree new-var-0 0
+show tree new-var-0 1
+
+Type help for other available commands. Command completion available with TAB key.
 
 Now entering REPL...
+
 smt-ambig>
 ```
+
+TODO: explain dissimilar subtrees
 
 This indicates that our tool successfully found an ambiguous sentence:
 
@@ -74,22 +111,9 @@ nop
 
 As mentioned in the paper, we only consider dissimilar subtrees, since this (in combination with the reachability condition) is logically equivalent to derivation ambiguity. Considering the dissimilar subtrees that witnesses local ambiguity, two of them exists for the subword $w^{1\dots3}$, and they both has the variable $\text{new-var-0}$ as their root. $\text{new-var-0}$ is a new variable created in the process of translating EBNF grammar into LS2NF grammar. When presenting the parse trees, this transformation is undone -- you'll only see variables and rules in original EBNF grammar in the presented parse trees.
 
-First, type `list tree new-var-0` and press enter to ensure that there exists two parse trees for the given sentence:
+Then, have a look at the parse trees one by one, by using the suggested commands `show tree new-var-0 0` and `show tree new-var-0 1`.  
 
-```
-smt-ambig> list tree new-var-0
-Parse trees of nonterminal: new-var-0
-+-------+---------------------+
-| index |         type        |
-+-------+---------------------+
-|   0   | UnaryExpressionNode |
-|   1   | UnaryExpressionNode |
-+-------+---------------------+
-```
-
-Please pay attention to how the common tree root $\text{new-var-0}$ is used in the command to denote the parse tree forest.
-
-Then, have a look at the parse trees one by one, by using the commands `show tree new-var-0 0` and `show tree new-var-0 1`.  Press enter after each command. You should see the parse trees generated by our tool Lamb.
+Press enter after each command. You should see the parse trees generated by our tool Lamb.
 
 Finally, input `exit` to quit our tool.
 
@@ -101,18 +125,35 @@ TODO
 
 ### 2.1 Looking at Dataset
 
-TODO:
-- Introduce the location of the dataset shown in Table 1. 
-- Move the introduction of EBNF here.
-- Say that in each lang group, the first test case is the original, and the other four are mutants.
+The following table describes the relationship between test cases in folder `tool/tests/` and Fig 6 in the paper.
+
+| #    | Lang    | Location                                             |
+| ---- | ------- | ---------------------------------------------------- |
+| #1-x | Python  | `tool/tests/checker-benchmark/python/x.bnf`          |
+| #2-x | SASS    | `tool/tests/checker-benchmark/sass/x.bnf`            |
+| #3-x | YAML    | `tool/tests/checker-benchmark/yaml/x.bnf`            |
+| #4-x | F#      | `tool/tests/checker-benchmark/fsharp-snippet/x.bnf`  |
+| #5-x | Haskell | `tool/tests/checker-benchmark/haskell-snippet/x.bnf` |
+
+The EBNF files (with file suffix `.bnf`) are written in plain-text form, which is a little bit different from the notation in the paper. A comparision between the plain-text form and the form used in the paper have been mentioned in Section 1.2 of this README.
+
+In each group, the first EBNF grammar (`0.bnf`) is the original grammar (i.e., *seed* grammar), while the other four grammars are variants of the seed grammar. This is in accordance with the evaluation setup in the paper.
 
 ### 2.2 Running the Experiments
 
-We assume that you are currently at the `lamb-artifact` folder. First, load the development shell for our tool:
+We assume that you are currently at the `tool` folder. First, load the development shell for our tool:
 
 ```bash
 nix develop
 ```
+
+This command introduces the fixed version of relevant tools, like Python, Z3 and Graphviz, into the PATH environment variable. It also sets up Python correctly, so it can find all depended PyPI packages. Conceptually, it is analogous to Virtualenv and Anaconda environment, but Nix can ensure reproducibility while both Virtualenv and Anaconda cannot.
+
+You may notice that after executing this command, the prompt line should then end with `[lamb-dev]>`, which means the development shell has been activated.
+
+TODO: explain run_tests.py; without `--all` we do not run test cases like Python and SASS; timeout;
+
+you can choose whether `--all` should be added
 
 Then, execute the following command to run all but Python / SASS testcases.
 
@@ -120,7 +161,7 @@ Then, execute the following command to run all but Python / SASS testcases.
 python run_tests.py
 ```
 
-This shall take around 10-25 minutes, depending on the performance of your platform. Afterwards, the total running time (sum of `solve_time` and `other_time`), ambiguous sentence length, among other details, shall be printed to the terminal. Another copy will also be stored into `result.json` in the current folder.
+This shall take around 10-25 minutes, depending on the performance of your platform. Afterwards, the total running time (sum of `solve_time` and `other_time`), ambiguous sentence length, among other details, shall be printed to the terminal. Another copy will also be stored into `result.json` in the current folder. 
 
 To run every testcases including Python and SASS, please run the following command.
 
@@ -135,6 +176,8 @@ TODO:
 2. If the reviewer does not want to run all, provide a script to execute a set of quick examples -- maybe the two fastest examples from each lang? -- so that everything is done in one hour.
 
 ### 2.3 Checking the Results
+
+(convert into CSV!)
 
 The results of step 2.2 are saved into a JSON file `result.json`. It has the exact same structure with Table 1 in our paper.
 
