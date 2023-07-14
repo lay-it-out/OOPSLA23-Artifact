@@ -223,7 +223,7 @@ Note: Despite the randomness of the found satisfiable model by the Z3 solver, th
 
 ### 2.4 Human Understanding of the Ambiguous Sentence (5 min)
 
-This section presents how one can analyze the cause of ambiguity by inspecting the parse trees of the generated ambiguous sentence, as mentioned in section §7.3. This is a minor result of our evaluation: skip this step if your time is tight.
+This part presents how one can analyze the cause of ambiguity by inspecting the parse trees of the generated ambiguous sentence, as mentioned in §7.3. This is a minor result of our evaluation: skip this step if your time is tight.
 
 In the development shell, run:
 
@@ -267,7 +267,9 @@ To inspect the parse trees, run `show tree explicit-key-val 0` and `show tree ex
 | ![Tree 0 of #3-2](./img/3-2-tree0.jpg) | ![Tree 1 of #3-2](./img/3-2-tree1.jpg) |
 | -------------------------------------- | -------------------------------------- |
 
-TODO: ending
+As mentioned in §7.3: we see that in tree 0, the mapping key is a one-element list that contains exactly a null; in tree 1, however, the mapping key is a one-element list that is not null. To fix this issue, we could add the offside-align constraint to the right-hand side of `off0-explicit-key`, `off0-implicit-key-val`, and `off0-explicit-val`.
+
+To sum up, the above process works to resolve (if not, at least our tool helps to understand the cause of) layout-sensitive ambiguity. Interesting readers are encouraged to repeat this process on other examples themselves.
 
 ### 2.5 Paper-to-Coq Correspondence Guide (30 min)
 
