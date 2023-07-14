@@ -193,16 +193,14 @@ This command introduces the fixed version of relevant tools, like Python, Z3 and
 
 You may notice that after executing this command, the prompt line should then end with `[lamb-dev]>`, which means the development shell has been activated.
 
-TODO: explain run_tests.py; without `--all` we do not run test cases like Python and SASS; timeout;
-
 To run all the experiments included in Section 7 of our paper, we have designed a script called `run_tests.py`, which runs all benchmarks in parallel, collect the metrics, and write the metrics in a file. This tool supports two command-line options:
 
-- `--all` determines whether benchmarks of SASS and Python grammars are included. Without the options, those benchmarks are excluded from running, which is useful if your time for artifact evaluation is limited.
-- `--timeout` determines how long (in seconds) shall we wait before killing the tool process and recording a case as `TIMEOUT`. The default is 
+- `--all` determines whether benchmarks of SASS and Python grammars are included. Without this option, those benchmarks are excluded from running, which is useful if your time for artifact evaluation is limited. You can choose to add this flag if you wish.
+- `--timeout` determines how long (in seconds) shall we wait before killing the tool process and recording a case as `TIMEOUT`. The default is 3600000 (1000 hours). Set this to a lower value if you prefer.
 
-you can choose whether `--all` should be added
+As described in the paper, the bound of sentence length for ambiguity detection is set to $k=20$ in all experiments.
 
-Then, execute the following command to run all but Python / SASS testcases.
+Then, execute the following command (with no `--all` tag) to run all but Python / SASS testcases.
 
 ```bash
 python run_tests.py
@@ -219,7 +217,6 @@ python run_tests.py --all
 Note that this can take very long (>24h) to complete.
 
 TODO:
-1. Set up a timeout in our experiment script, so that we hopefully to reproduce everything within a few hours, not a day. DONE
 2. If the reviewer does not want to run all, provide a script to execute a set of quick examples -- maybe the two fastest examples from each lang? -- so that everything is done in one hour.
 
 ### 2.3 Checking the Results (? min)
@@ -230,9 +227,53 @@ Note: Despite the randomness of the found satisfiable model by Z3 solver, the le
 
 ### 2.4 Human Understanding of Ambiguous Sentence
 
-This section presents how one can analyze the cause of ambiguity by inspecting the parse trees for the generated ambiguous sentence, as mentioned in section 7.2. This is a minor result of our evaluation: skip it if your time is tight.
+This section presents how one can analyze the cause of ambiguity by inspecting the parse trees for the generated ambiguous sentence, as mentioned in section 7.3. This is a minor result of our evaluation: skip it if your time is tight.
 
-TODO: details
+We'll also use grammar #3-2 as described in the paper. First, enter the development shell using either `nix develop` or `docker run -it lamb:0.0.0`. Then, run:
+
+```
+python -m lamb ./tests/checker-benchmark/yaml/2.bnf
+```
+
+As mentioned above, you may encounter a different ambiguous sentence due to randomness in Z3 solver. In our experiment, the tool outputs the following:
+
+```
+***
+Ambiguous sentence of length 6 found. It shall be listed below.
+***
+
+␣␣␣␣␣␣␣␣␣␣␣␣␣␣␣␣?       ␣␣␣␣␣␣␣␣
+-       ␣␣␣␣␣␣␣␣␣␣␣␣␣␣␣␣␣␣␣␣␣␣␣␣
+␣␣␣␣␣␣␣␣␣␣␣␣␣␣␣␣:       ␣␣␣␣␣␣␣␣
+␣␣␣␣␣␣␣␣-       ␣␣␣␣␣␣␣␣␣␣␣␣␣␣␣␣
+␣␣␣␣␣␣␣␣␣␣␣␣␣␣␣␣:       ␣␣␣␣␣␣␣␣
+␣␣␣␣␣␣␣␣␣␣␣␣␣␣␣␣␣␣␣␣␣␣␣␣t
+
+***
+Found locally ambiguous variable: "explicit-key-val". It corresponds to token(s) [1, 6] in the ambiguous sentence.
+***
+
+NOTE: indexing for tokens in the sentence starts at 1. Spaces in the sentence are denoted as `␣'.
+NEXT STEP: Review all parse trees using the following commands (execute line by line):
+
+show tree explicit-key-val 0
+show tree explicit-key-val 1
+
+Type help for other available commands. Command completion available with TAB key.
+
+Now entering REPL...
+
+smt-ambig>
+```
+
+The ambiguous sentence found is exactly the same as Fig. 7 in the paper. Then, run `show tree explicit-key-val 0` and `show tree explicit-key-val 1`, which produces the following images:
+
+| ![Tree 0 of #3-2](./img/3-2-tree0.jpg) | ![Tree 1 of #3-2](./img/3-2-tree1.jpg) |
+| -------------------------------------- | -------------------------------------- |
+
+Those parse trees are exactly the same as Fig.7.
+
+TODO: ending
 
 ### 2.5 Paper-to-Coq Correspondence Guide (30 min)
 
