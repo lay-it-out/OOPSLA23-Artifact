@@ -191,11 +191,11 @@ nix develop
 
 It loads all necessary dependencies (such as Python with all required packages, Z3, and Graphviz) into the PATH environment variable. Notice that after executing this command, the prompt line should now end with `[lamb-dev]>`, meaning the development shell has been activated.
 
-For ease of running the experiments, we built a script `run_tests.py` that check the grammars in parallel, collects the metrics, and saves the metrics to a file. Depending on how much time you can spend, choose **one** of the following options (from fastest to slowest):
+For ease of running the experiments, we built a script `run_tests.py` that checks the grammars in parallel, collects the metrics, and saves the metrics to a file. Depending on how much time you can spend, choose **one** of the following options (from longest to shortest time spent):
 
-- Enable option `--fastest`: check grammars #1-3, #2-1, #3-1, #4-1, and #5-4 only (i.e., the fastest one of each language group). This option is conflict with `--all`.
+- Enable option `--fastest`: check grammars #1-3, #2-1, #3-1, #4-1, and #5-4 only (i.e., the fastest one of each language group). This option conflicts with `--all`.
 - No option: check all grammars excluding SASS and Python grammars.
-- Enable option `--all`: check all grammars, including SASS and Python grammars. This option is conflict with `--fastest`.
+- Enable option `--all`: check all grammars, including SASS and Python grammars. This option conflicts with `--fastest`.
 
 Execute the following in the development shell, where `OPTION` is one of the above:
 
@@ -221,7 +221,7 @@ The results of step 2.2 are saved into a CSV file `result.csv`. It has the same 
 
 Note: Despite the randomness of the found satisfiable model by the Z3 solver, the lengths of the ambiguous sentence (i.e., the last column of Table 1) are determined, though under the hood the found ambiguous sentence may differ.
 
-### 2.4 Human Understanding of Ambiguous Sentence (5 min)
+### 2.4 Human Understanding of the Ambiguous Sentence (5 min)
 
 This section presents how one can analyze the cause of ambiguity by inspecting the parse trees of the generated ambiguous sentence, as mentioned in section §7.3. This is a minor result of our evaluation: skip this step if your time is tight.
 
@@ -271,4 +271,4 @@ TODO: ending
 
 ### 2.5 Paper-to-Coq Correspondence Guide (30 min)
 
-Change the directory to `proof/`. Open `README.md` and read the chapter [Paper-to-Artifact Correspondence Guide](proof/README.md#paper-to-artifact-correspondence-guide). If you wish to step into the proofs, launch your Coq IDE in the Nix development shell (by `nix develop`; see [Step Into the Code](proof/README.md#step-into-the-code) for more details).
+Change the directory to `proof/`. Open `README.md` and read the chapter [Paper-to-Artifact Correspondence Guide](proof/README.md#paper-to-artifact-correspondence-guide). If you wish to step into the proofs, launch your Coq IDE in the Nix development shell (via `nix develop`; see [Step Into the Code](proof/README.md#step-into-the-code) for more details).
