@@ -214,20 +214,16 @@ python run_tests.py --all
 Note that this can take very long (>24h) to complete.
 
 TODO:
-1. Set up a timeout in our experiment script, so that we hopefully to reproduce everything within a few hours, not a day.
+1. Set up a timeout in our experiment script, so that we hopefully to reproduce everything within a few hours, not a day. DONE
 2. If the reviewer does not want to run all, provide a script to execute a set of quick examples -- maybe the two fastest examples from each lang? -- so that everything is done in one hour.
 
 ### 2.3 Checking the Results (? min)
 
-(convert into CSV!)
-
-The results of step 2.2 are saved into a JSON file `result.json`. It has the exact same structure with Table 1 in our paper.
+The results of step 2.2 are saved into a CSV file `result.csv`. It has the same structure with Table 1 in our paper.
 
 Note: Despite the randomness of the found satisfiable model by Z3 solver, the lengths of the ambiguous sentence (i.e., the last column of Table 1) are determined, though under the hood the found ambiguous sentence may differ.
 
-TODO: we should have a script that does the above, which saves reviewer's time to check data.
-
-### 2.4 Human Understanding of Ambiguous Sentence (? min)
+### 2.4 Human Understanding of Ambiguous Sentence
 
 This section presents how one can analyze the cause of ambiguity by inspecting the parse trees for the generated ambiguous sentence, as mentioned in section 7.2. This is a minor result of our evaluation: skip it if your time is tight.
 
