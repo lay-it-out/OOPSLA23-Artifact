@@ -195,6 +195,7 @@ You may notice that after executing this command, the prompt line should then en
 
 To run all the experiments included in Section 7 of our paper, we have designed a script called `run_tests.py`, which runs all benchmarks in parallel, collect the metrics, and write the metrics in a file. This tool supports two command-line options:
 
+- `--fastest` determines whether only the fastest grammar from each language is being run. Once enabled, the evaluation will only be done on grammar #1-3, #2-1, #3-1, #4-1 and #5-4. This option cannot be used simultaneously with `--all`.
 - `--all` determines whether benchmarks of SASS and Python grammars are included. Without this option, those benchmarks are excluded from running, which is useful if your time for artifact evaluation is limited. You can choose to add this flag if you wish.
 - `--timeout` determines how long (in seconds) shall we wait before killing the tool process and recording a case as `TIMEOUT`. The default is 3600000 (1000 hours). Set this to a lower value if you prefer.
 
@@ -208,6 +209,12 @@ python run_tests.py
 
 This shall take around 10-25 minutes, depending on the performance of your platform. Afterwards, the total running time (sum of `solve_time` and `other_time`), ambiguous sentence length, among other details, shall be printed to the terminal. Another copy will also be stored into `result.json` in the current directory. 
 
+Alternatively, you may also want to see that our tool handles the grammars of each language properly. You can use `--fastest` for this purpose:
+
+```bash
+python run_tests.py --fastest
+```
+
 To run every testcases including Python and SASS, please run the following command.
 
 ```bash
@@ -216,10 +223,7 @@ python run_tests.py --all
 
 Note that this can take very long (>24h) to complete.
 
-TODO:
-2. If the reviewer does not want to run all, provide a script to execute a set of quick examples -- maybe the two fastest examples from each lang? -- so that everything is done in one hour.
-
-### 2.3 Checking the Results (? min)
+### 2.3 Checking the Results
 
 The results of step 2.2 are saved into a CSV file `result.csv`. It has the same structure with Table 1 in our paper.
 
