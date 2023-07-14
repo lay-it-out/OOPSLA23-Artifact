@@ -195,6 +195,11 @@ You may notice that after executing this command, the prompt line should then en
 
 TODO: explain run_tests.py; without `--all` we do not run test cases like Python and SASS; timeout;
 
+To run all the experiments included in Section 7 of our paper, we have designed a script called `run_tests.py`, which runs all benchmarks in parallel, collect the metrics, and write the metrics in a file. This tool supports two command-line options:
+
+- `--all` determines whether benchmarks of SASS and Python grammars are included. Without the options, those benchmarks are excluded from running, which is useful if your time for artifact evaluation is limited.
+- `--timeout` determines how long (in seconds) shall we wait before killing the tool process and recording a case as `TIMEOUT`. The default is 
+
 you can choose whether `--all` should be added
 
 Then, execute the following command to run all but Python / SASS testcases.
