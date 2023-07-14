@@ -116,7 +116,7 @@ nop
 Second, the output provides hints on the commands required to view all parse trees rooted at given nonterminals. The command syntax is
 
 ```
-show tree <nonterminal> <id>
+show tree <nonterminal> <tree-index>
 ```
 
 The nonterminal is the one in the transformed binary normal form (so it can be a fresh name not seen in the EBNF), but the parse trees will be presented in the original EBNF for ease of viewing. Here, `new-var-0` is the root of the two dissimilar subtrees (the nonterminal $H$ in our encoding $\Phi(k)$; see §5.2) we found and it happens to be the start symbol `block`. The benefit of showing dissimilar subtrees is to make it easier to see the differences between those trees (as mentioned in the paper, being dissimilar means "differ in a node at level 1").
@@ -165,9 +165,9 @@ Then the building succeeds and all theorems are machine-checked.
 
 ## 2 Step-by-Step Instructions for Reproducing Evaluations (25 min)
 
-### 2.1 Looking at Dataset (? min)
+### 2.1 Looking at the Dataset (3 min)
 
-The following table describes the relationship between test cases in directory `tool/tests/` and Fig 6 in the paper.
+The following table presents the location of the dataset listed in Fig. 6 (where the sub-index x = 0, 1, 2, 3, 4):
 
 | #    | Lang    | Location                                             |
 | ---- | ------- | ---------------------------------------------------- |
@@ -177,69 +177,61 @@ The following table describes the relationship between test cases in directory `
 | #4-x | F#      | `tool/tests/checker-benchmark/fsharp-snippet/x.bnf`  |
 | #5-x | Haskell | `tool/tests/checker-benchmark/haskell-snippet/x.bnf` |
 
-The EBNF files (with file suffix `.bnf`) are written in plain-text form, which is a little bit different from the notation in the paper. A comparision between the plain-text form and the form used in the paper have been mentioned in Section 1.2 of this README.
+The EBNF files (`*.bnf`) are written in plain-text form, which is slightly different from the notation in the paper. See [step 1.2](#12-testing-the-motivating-example-4-min) for the conversion.
 
-In each group, the first EBNF grammar (`0.bnf`) is the original grammar (i.e., *seed* grammar), while the other four grammars are variants of the seed grammar. This is in accordance with the evaluation setup in the paper.
+In each group, the first grammar (`0.bnf`) is the original (i.e., *seed*), while the other four are variants of the seed grammar. This is consistent with our evaluation setup mentioned in §7.1.
 
 ### 2.2 Running the Experiments (? min)
 
-We assume that you are currently at the `tool` directory. First, load the development shell for our tool:
+To reproduce our experiments, change the directory to `tool/` and enter the development shell via the following command (if using Docker, start the container via `docker run -it lamb:0.0.0` will directly bring you to the development shell):
 
 ```bash
 nix develop
 ```
 
-This command introduces the fixed version of relevant tools, like Python, Z3 and Graphviz, into the PATH environment variable. It also sets up Python correctly, so it can find all depended PyPI packages. Conceptually, it is analogous to Virtualenv and Anaconda environment, but Nix can ensure reproducibility while both Virtualenv and Anaconda cannot.
+It loads all necessary dependencies (such as Python with all required packages, Z3, and Graphviz) into the PATH environment variable. Notice that after executing this command, the prompt line should now end with `[lamb-dev]>`, meaning the development shell has been activated.
 
-You may notice that after executing this command, the prompt line should then end with `[lamb-dev]>`, which means the development shell has been activated.
+For ease of running the experiments, we built a script `run_tests.py` that check the grammars in parallel, collects the metrics, and saves the metrics to a file. Depending on how much time you can spend, choose **one** of the following options (from fastest to slowest):
 
-To run all the experiments included in Section 7 of our paper, we have designed a script called `run_tests.py`, which runs all benchmarks in parallel, collect the metrics, and write the metrics in a file. This tool supports two command-line options:
+- Enable option `--fastest`: check grammars #1-3, #2-1, #3-1, #4-1, and #5-4 only (i.e., the fastest one of each language group). This option is conflict with `--all`.
+- No option: check all grammars excluding SASS and Python grammars.
+- Enable option `--all`: check all grammars, including SASS and Python grammars. This option is conflict with `--fastest`.
 
-- `--fastest` determines whether only the fastest grammar from each language is being run. Once enabled, the evaluation will only be done on grammar #1-3, #2-1, #3-1, #4-1 and #5-4. This option cannot be used simultaneously with `--all`.
-- `--all` determines whether benchmarks of SASS and Python grammars are included. Without this option, those benchmarks are excluded from running, which is useful if your time for artifact evaluation is limited. You can choose to add this flag if you wish.
-- `--timeout` determines how long (in seconds) shall we wait before killing the tool process and recording a case as `TIMEOUT`. The default is 3600000 (1000 hours). Set this to a lower value if you prefer.
-
-As described in the paper, the bound of sentence length for ambiguity detection is set to $k=20$ in all experiments.
-
-Then, execute the following command (with no `--all` tag) to run all but Python / SASS testcases.
+Execute the following in the development shell, where `OPTION` is one of the above:
 
 ```bash
-python run_tests.py
+python run_tests.py OPTION
 ```
 
-This shall take around 10-25 minutes, depending on the performance of your platform. Afterwards, the total running time (sum of `solve_time` and `other_time`), ambiguous sentence length, among other details, shall be printed to the terminal. Another copy will also be stored into `result.json` in the current directory. 
-
-Alternatively, you may also want to see that our tool handles the grammars of each language properly. You can use `--fastest` for this purpose:
-
-```bash
-python run_tests.py --fastest
-```
-
-To run every testcases including Python and SASS, please run the following command.
+For example, the following command runs all the experiments:
 
 ```bash
 python run_tests.py --all
 ```
 
-Note that this can take very long (>24h) to complete.
+Additionally, you may use the option `--timeout SECONDS` to customize how long (in seconds) we shall wait before killing the tool process (for each grammar???) and recording the result as `TIMEOUT`. The default value is 3600000 (1000 hours) TODO: too long; we should reproduce Table 1, meaning the default timeout for each benchmark shall be 1 h.
 
-### 2.3 Checking the Results
+When the script completes, metrics will be collected and saved to file `./result.json`.
 
-The results of step 2.2 are saved into a CSV file `result.csv`. It has the same structure with Table 1 in our paper.
+### 2.3 Checking the Results (3 min)
 
-Note: Despite the randomness of the found satisfiable model by Z3 solver, the lengths of the ambiguous sentence (i.e., the last column of Table 1) are determined, though under the hood the found ambiguous sentence may differ.
+TODO: how to convert json to csv?
 
-### 2.4 Human Understanding of Ambiguous Sentence
+The results of step 2.2 are saved into a CSV file `result.csv`. It has the same structure as Table 1 in the paper.
 
-This section presents how one can analyze the cause of ambiguity by inspecting the parse trees for the generated ambiguous sentence, as mentioned in section 7.3. This is a minor result of our evaluation: skip it if your time is tight.
+Note: Despite the randomness of the found satisfiable model by the Z3 solver, the lengths of the ambiguous sentence (i.e., the last column of Table 1) are determined, though under the hood the found ambiguous sentence may differ.
 
-We'll also use grammar #3-2 as described in the paper. First, enter the development shell using either `nix develop` or `docker run -it lamb:0.0.0`. Then, run:
+### 2.4 Human Understanding of Ambiguous Sentence (5 min)
 
-```
+This section presents how one can analyze the cause of ambiguity by inspecting the parse trees of the generated ambiguous sentence, as mentioned in section §7.3. This is a minor result of our evaluation: skip this step if your time is tight.
+
+In the development shell, run:
+
+```bash
 python -m lamb ./tests/checker-benchmark/yaml/2.bnf
 ```
 
-As mentioned above, you may encounter a different ambiguous sentence due to randomness in Z3 solver. In our experiment, the tool outputs the following:
+As mentioned above, a different ambiguous sentence may be produced due to the randomness of the Z3 solver. In the following, we assume the generated ambiguous sentence is the one mentioned in Fig. 7. This is the expected output:
 
 ```
 ***
@@ -270,12 +262,10 @@ Now entering REPL...
 smt-ambig>
 ```
 
-The ambiguous sentence found is exactly the same as Fig. 7 in the paper. Then, run `show tree explicit-key-val 0` and `show tree explicit-key-val 1`, which produces the following images:
+To inspect the parse trees, run `show tree explicit-key-val 0` and `show tree explicit-key-val 1` in our REPL (as in step 1.2). The trees are the same as in Fig. 7:
 
 | ![Tree 0 of #3-2](./img/3-2-tree0.jpg) | ![Tree 1 of #3-2](./img/3-2-tree1.jpg) |
 | -------------------------------------- | -------------------------------------- |
-
-Those parse trees are exactly the same as Fig.7.
 
 TODO: ending
 
