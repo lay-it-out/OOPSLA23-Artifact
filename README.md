@@ -209,13 +209,11 @@ For example, the following command runs all the experiments:
 python run_tests.py --all
 ```
 
-Additionally, you may use the option `--timeout SECONDS` to customize how long (in seconds) we shall wait before killing the tool process (for each grammar???) and recording the result as `TIMEOUT`. The default value is 3600000 (1000 hours) TODO: too long; we should reproduce Table 1, meaning the default timeout for each benchmark shall be 1 h.
+Additionally, you may use the option `--timeout SECONDS` to customize how long (in seconds) we shall wait before killing the tool process (for each grammar???) and recording the result as `TIMEOUT`. The default value is 3600 (1 hour)
 
 When the script completes, metrics will be collected and saved to file `./result.json`.
 
 ### 2.3 Checking the Results (3 min)
-
-TODO: how to convert json to csv?
 
 The results of step 2.2 are saved into a CSV file `result.csv`. It has the same structure as Table 1 in the paper.
 
