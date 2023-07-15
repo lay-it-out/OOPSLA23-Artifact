@@ -163,7 +163,7 @@ If no error messages show and you see the following line (or something similar i
 
 Then the building succeeds and all theorems are machine-checked.
 
-## 2 Step-by-Step Instructions for Reproducing Evaluations (25 min)
+## 2 Step-by-Step Instructions for Reproducing Evaluations (36 min -- 2 h)
 
 ### 2.1 Looking at the Dataset (3 min)
 
@@ -181,7 +181,7 @@ The EBNF files (`*.bnf`) are written in plain-text form, which is slightly diffe
 
 In each group, the first grammar (`0.bnf`) is the original (i.e., *seed*), while the other four are variants of the seed grammar. This is consistent with our evaluation setup mentioned in §7.1.
 
-### 2.2 Running the Experiments (5min ~ >24h)
+### 2.2 Running the Experiments (5 min - 1.5 h)
 
 To reproduce our experiments, change the directory to `tool/` and enter the development shell via the following command (if using Docker, start the container via `docker run -it lamb:0.0.0` will directly bring you to the development shell):
 
@@ -193,9 +193,9 @@ It loads all necessary dependencies (such as Python with all required packages, 
 
 For ease of running the experiments, we built a script `run_tests.py` that checks the grammars in parallel, collects the metrics, and saves the metrics to a file. Depending on how much time you can spend, choose **one** of the following options (from shortest to longest time spent):
 
-- Enable option `--fastest`: check grammars #1-3, #2-1, #3-1, #4-1, and #5-4 only (i.e., the fastest one of each language group). This option conflicts with `--all`. (~5min)
-- No option: check all grammars excluding SASS and Python grammars. (~12min)
-- Enable option `--all`: check all grammars, including SASS and Python grammars. This option conflicts with `--fastest`. (>24h)
+- Enable option `--fastest`: check grammars #1-3, #2-1, #3-1, #4-1, and #5-4 only (i.e., the fastest one of each language group). This option conflicts with `--all`. (~5 min)
+- No option: check all grammars excluding SASS and Python grammars. (~12 min)
+- Enable option `--all`: check all grammars, including SASS and Python grammars. This option conflicts with `--fastest`. (1 -- 1.5 h, depending on the degree of parallelism of your machine)
 
 Execute the following in the development shell, where `OPTION` is one of the above:
 
@@ -211,13 +211,13 @@ python run_tests.py --all
 
 Additionally, you may use the option `--timeout SECONDS` to customize how long (in seconds) we shall wait before killing the tool process (for each grammar) and recording the result as `TIMEOUT`. The default value is 3600 (1 hour)
 
-When the script completes, metrics will be collected and saved to file `./result.csv`.
+When the script completes, metrics will be collected and saved to file `result.csv` under the current directory.
 
 ### 2.3 Checking the Results (3 min)
 
-The results of step 2.2 are saved into a CSV file `result.csv`. It has the same structure as Table 1 in the paper.
+The results of step 2.2 have been saved to a CSV file `result.csv`. It has the same structure as Table 1 in the paper.
 
-Note: Despite the randomness of the found satisfiable model by the Z3 solver, the lengths of the ambiguous sentence (i.e., the last column of Table 1) are determined, though under the hood the found ambiguous sentence may differ.
+Note: Despite the randomness of the found satisfiable model by the Z3 solver, the lengths of the ambiguous sentence (i.e., the last column of Table 1) are determined (the found ambiguous sentences may differ).
 
 ### 2.4 Human Understanding of the Ambiguous Sentence (5 min)
 
@@ -269,6 +269,6 @@ As mentioned in §7.3: we see that in tree 0, the mapping key is a one-element l
 
 To sum up, the above process works to resolve (if not, at least our tool helps to understand the cause of) layout-sensitive ambiguity. Interesting readers are encouraged to repeat this process on other examples themselves.
 
-### 2.5 Paper-to-Coq Correspondence Guide (30 min)
+### 2.5 Paper-to-Coq Correspondence Guide (~20 min)
 
-Change the directory to `proof/`. Open `README.md` and read the chapter [Paper-to-Artifact Correspondence Guide](proof/README.md#paper-to-artifact-correspondence-guide). If you wish to step into the proofs, launch your Coq IDE in the Nix development shell (via `nix develop`; see [Step Into the Code](proof/README.md#step-into-the-code) for more details).
+Change the directory to `proof/`. Open `README.md` and read the chapter [Paper-to-Artifact Correspondence Guide](proof/README.md#paper-to-artifact-correspondence-guide). Optionally, if you wish to step into the proofs, launch your Coq IDE in the Nix development shell (via `nix develop`; see [Step Into the Code](proof/README.md#step-into-the-code) for more details).
