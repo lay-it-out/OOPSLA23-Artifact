@@ -181,7 +181,7 @@ The EBNF files (`*.bnf`) are written in plain-text form, which is slightly diffe
 
 In each group, the first grammar (`0.bnf`) is the original (i.e., *seed*), while the other four are variants of the seed grammar. This is consistent with our evaluation setup mentioned in §7.1.
 
-### 2.2 Running the Experiments (5 min - 1.5 h)
+### 2.2 Running the Experiments (5 min -- 1.5 h)
 
 To reproduce our experiments, change the directory to `tool/` and enter the development shell via the following command (if using Docker, start the container via `docker run -it lamb:0.0.0` will directly bring you to the development shell):
 
