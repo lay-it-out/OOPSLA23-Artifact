@@ -181,7 +181,7 @@ The EBNF files (`*.bnf`) are written in plain-text form, which is slightly diffe
 
 In each group, the first grammar (`0.bnf`) is the original (i.e., *seed*), while the other four are variants of the seed grammar. This is consistent with our evaluation setup mentioned in §7.1.
 
-### 2.2 Running the Experiments (? min)
+### 2.2 Running the Experiments (5min ~ >24h)
 
 To reproduce our experiments, change the directory to `tool/` and enter the development shell via the following command (if using Docker, start the container via `docker run -it lamb:0.0.0` will directly bring you to the development shell):
 
@@ -191,11 +191,11 @@ nix develop
 
 It loads all necessary dependencies (such as Python with all required packages, Z3, and Graphviz) into the PATH environment variable. Notice that after executing this command, the prompt line should now end with `[lamb-dev]>`, meaning the development shell has been activated.
 
-For ease of running the experiments, we built a script `run_tests.py` that checks the grammars in parallel, collects the metrics, and saves the metrics to a file. Depending on how much time you can spend, choose **one** of the following options (from longest to shortest time spent):
+For ease of running the experiments, we built a script `run_tests.py` that checks the grammars in parallel, collects the metrics, and saves the metrics to a file. Depending on how much time you can spend, choose **one** of the following options (from shortest to longest time spent):
 
-- Enable option `--fastest`: check grammars #1-3, #2-1, #3-1, #4-1, and #5-4 only (i.e., the fastest one of each language group). This option conflicts with `--all`.
-- No option: check all grammars excluding SASS and Python grammars.
-- Enable option `--all`: check all grammars, including SASS and Python grammars. This option conflicts with `--fastest`.
+- Enable option `--fastest`: check grammars #1-3, #2-1, #3-1, #4-1, and #5-4 only (i.e., the fastest one of each language group). This option conflicts with `--all`. (~5min)
+- No option: check all grammars excluding SASS and Python grammars. (~12min)
+- Enable option `--all`: check all grammars, including SASS and Python grammars. This option conflicts with `--fastest`. (>24h)
 
 Execute the following in the development shell, where `OPTION` is one of the above:
 
@@ -209,9 +209,9 @@ For example, the following command runs all the experiments:
 python run_tests.py --all
 ```
 
-Additionally, you may use the option `--timeout SECONDS` to customize how long (in seconds) we shall wait before killing the tool process (for each grammar???) and recording the result as `TIMEOUT`. The default value is 3600 (1 hour)
+Additionally, you may use the option `--timeout SECONDS` to customize how long (in seconds) we shall wait before killing the tool process (for each grammar) and recording the result as `TIMEOUT`. The default value is 3600 (1 hour)
 
-When the script completes, metrics will be collected and saved to file `./result.json`.
+When the script completes, metrics will be collected and saved to file `./result.csv`.
 
 ### 2.3 Checking the Results (3 min)
 
