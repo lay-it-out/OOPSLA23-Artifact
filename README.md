@@ -21,7 +21,7 @@ NOTE: As far as we know, Nix (1.1a) is a better option because:
 + you can easily view the images of parse trees via any document/figure preview applications installed on your machine (instead of a virtual machine typically with text UI only);
 + you can use whatever Coq IDEs to step into the Coq proofs, if necessary.
 
-For Windows users, WSL2 is a possible way to install and run Nix. However, if you find difficulties in installing Nix, Docker (1.1b) is the secondary option where you will only be able to view parse trees in S-expression format.
+For Windows users, WSL2 is a possible way to install and run Nix. However, if you find difficulties in installing Nix, Docker (1.1b) is the secondary option where you will only be able to view parse trees in S-expression format. If you want to view the visualized parse trees, please first install `xdg-open` in WSL2. If the images still cannot be shown, please try installing an application capable of viewing images like `Gwenview` or `firefox` in the Linux subsystem.
 
 #### 1.1a Via Nix
 
