@@ -46,13 +46,13 @@ If you haven't installed Docker, follow [this link](https://docs.docker.com/desk
 In the `tool/` directory, run the following to build a Docker image:
 
 ```bash
-docker build . -t lamb:0.0.0
+docker build . -t lamb:0.0.2
 ```
 
 Then, start a container using that image, so that you will be dropped into the development shell:
 
 ```bash
-docker run -it lamb:0.0.0
+docker run -it lamb:0.0.2
 ```
 
 Your shell prompt should now end with `[lamb-dev]>`.
@@ -152,13 +152,13 @@ If no error messages show, then the theorems are all machine-checked.
 Build the docker image with the following command:
 
 ```bash
-docker build . -t proof-artifact:0.0.0
+docker build . -t proof-artifact:0.0.2
 ```
 
 If no error messages show and you see the following line (or something similar if you are using an older version):
 
 ```
- => => naming to docker.io/library/proof-artifact:0.0.0
+ => => naming to docker.io/library/proof-artifact:0.0.2
 ```
 
 Then the building succeeds and all theorems are machine-checked.
@@ -183,7 +183,7 @@ In each group, the first grammar (`0.bnf`) is the original (i.e., *seed*), while
 
 ### 2.2 Running the Experiments (5 min -- 1.5 h)
 
-To reproduce our experiments, change the directory to `tool/` and enter the development shell via the following command (if using Docker, start the container via `docker run -it lamb:0.0.0` will directly bring you to the development shell):
+To reproduce our experiments, change the directory to `tool/` and enter the development shell via the following command (if using Docker, start the container via `docker run -it lamb:0.0.2` will directly bring you to the development shell):
 
 ```bash
 nix develop
