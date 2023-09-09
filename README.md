@@ -132,6 +132,8 @@ to view the two different parse trees. The S-expression form will always be prin
 
 Finally, type `exit` to quit the REPL.
 
+**NOTE: if you are interested in running Lamb on your own grammar, you should refer to `tool/README.md` for detailed documents of Lamb.**
+
 ### 1.3 Checking the Coq Proof Artifact (3 min)
 
 Change the directory to `proof/`. Likewise, we also provide two options to compile the Coq proof and you should choose **either**:
